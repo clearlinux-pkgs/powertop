@@ -1,0 +1,69 @@
+diff -purN powertop-2.7.org/src/cpu/cpu.cpp powertop-2.7/src/cpu/cpu.cpp
+--- powertop-2.7.org/src/cpu/cpu.cpp	2014-10-30 22:57:37.000000000 -0400
++++ powertop-2.7/src/cpu/cpu.cpp	2014-12-24 23:42:39.436408123 -0500
+@@ -58,6 +58,8 @@ class perf_power_bundle: public perf_bun
+ };
+ 
+ 
++extern int inhibit_intel;
++
+ static class abstract_cpu * new_package(int package, int cpu, char * vendor, int family, int model)
+ {
+ 	class abstract_cpu *ret = NULL;
+@@ -66,7 +68,7 @@ static class abstract_cpu * new_package(
+ 	class dram_rapl_device *dram_rapl_dev;
+ 
+ 	char packagename[128];
+-	if (strcmp(vendor, "GenuineIntel") == 0)
++	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
+ 		if (family == 6)
+ 			if (is_supported_intel_cpu(model))
+ 				ret = new class nhm_package(model);
+@@ -103,7 +105,7 @@ static class abstract_cpu * new_core(int
+ {
+ 	class abstract_cpu *ret = NULL;
+ 
+-	if (strcmp(vendor, "GenuineIntel") == 0)
++	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
+ 		if (family == 6)
+ 			if (is_supported_intel_cpu(model))
+ 				ret = new class nhm_core(model);
+@@ -132,7 +134,7 @@ static class abstract_cpu * new_cpu(int
+ {
+ 	class abstract_cpu * ret = NULL;
+ 
+-	if (strcmp(vendor, "GenuineIntel") == 0)
++	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
+ 		if (family == 6)
+ 			if (is_supported_intel_cpu(model))
+ 				ret = new class nhm_cpu;
+diff -purN powertop-2.7.org/src/main.cpp powertop-2.7/src/main.cpp
+--- powertop-2.7.org/src/main.cpp	2014-11-21 13:28:31.000000000 -0500
++++ powertop-2.7/src/main.cpp	2014-12-24 23:41:55.559956654 -0500
+@@ -69,6 +69,8 @@
+ int debug_learning = 0;
+ unsigned time_out = 20;
+ int leave_powertop = 0;
++
++int inhibit_intel = 0;
+ void (*ui_notify_user) (const char *frmt, ...);
+ 
+ enum {
+@@ -90,6 +92,7 @@ static const struct option long_options[
+ 	{"quiet",	no_argument,		NULL,		 'q'},
+ 	{"time",	optional_argument,	NULL,		 't'},
+ 	{"workload",	optional_argument,	NULL,		 'w'},
++	{"inhibit-intel",no_argument,		NULL,		 'x'},
+ 	{"version",	no_argument,		NULL,		 'V'},
+ 	{"help",	no_argument,		NULL,		 'h'},
+ 	{NULL,		0,			NULL,		 0}
+@@ -444,6 +447,9 @@ int main(int argc, char **argv)
+ 		case 'w':		/* measure workload */
+ 			sprintf(workload, "%s", optarg ? optarg : '\0');
+ 			break;
++		case 'x':	
++			inhibit_intel = 1;
++			break;
+ 		case 'V':
+ 			print_version();
+ 			exit(0);
