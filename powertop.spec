@@ -4,7 +4,7 @@
 #
 Name     : powertop
 Version  : 2.7
-Release  : 12
+Release  : 13
 URL      : https://github.com/fenrus75/powertop/archive/v2.7.tar.gz
 Source0  : https://github.com/fenrus75/powertop/archive/v2.7.tar.gz
 Summary  : No detailed summary available
