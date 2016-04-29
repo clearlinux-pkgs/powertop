@@ -4,7 +4,7 @@
 #
 Name     : powertop
 Version  : 2.8
-Release  : 16
+Release  : 17
 URL      : https://github.com/fenrus75/powertop/archive/v2.8.tar.gz
 Source0  : https://github.com/fenrus75/powertop/archive/v2.8.tar.gz
 Summary  : No detailed summary available
