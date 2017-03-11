@@ -1,5 +1,5 @@
 PKG_NAME := powertop
-URL := https://github.com/fenrus75/powertop/archive/v2.8.tar.gz
-ARCHIVES :=
+URL := http://github.com/fenrus75/powertop/archive/v2.9.tar.gz
+
 
 include ../common/Makefile.common
