@@ -1,0 +1,11 @@
+--- powertop-2.9/src/tuning/tuningsysfs.cpp~	2017-01-25 21:42:42.000000000 +0000
++++ powertop-2.9/src/tuning/tuningsysfs.cpp	2018-04-21 14:22:34.393343737 +0000
+@@ -121,7 +121,7 @@
+ 
+ 	snprintf(filename, sizeof(filename), "/sys/class/scsi_host/%s/link_power_management_policy", d_name);
+ 	snprintf(msg, sizeof(msg), _("Enable SATA link power management for %s"), d_name);
+-	add_sysfs_tunable(msg, filename,"min_power");
++	add_sysfs_tunable(msg, filename,"med_power_with_dipm");
+ }
+ 
+ void add_sata_tunables(void)
