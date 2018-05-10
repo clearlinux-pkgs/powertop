@@ -4,7 +4,7 @@
 #
 Name     : powertop
 Version  : 2.9
-Release  : 23
+Release  : 24
 URL      : http://github.com/fenrus75/powertop/archive/v2.9.tar.gz
 Source0  : http://github.com/fenrus75/powertop/archive/v2.9.tar.gz
 Summary  : No detailed summary available
