@@ -1,7 +1,8 @@
-diff -purN powertop-2.7.org/src/cpu/cpu.cpp powertop-2.7/src/cpu/cpu.cpp
---- powertop-2.7.org/src/cpu/cpu.cpp	2014-10-30 22:57:37.000000000 -0400
-+++ powertop-2.7/src/cpu/cpu.cpp	2014-12-24 23:42:39.436408123 -0500
-@@ -58,6 +58,8 @@ class perf_power_bundle: public perf_bun
+diff --git a/src/cpu/cpu.cpp b/src/cpu/cpu.cpp
+index a92f111..8a4e77b 100644
+--- a/src/cpu/cpu.cpp
++++ b/src/cpu/cpu.cpp
+@@ -58,6 +58,8 @@ class perf_power_bundle: public perf_bundle
  };
  
  
@@ -10,37 +11,38 @@ diff -purN powertop-2.7.org/src/cpu/cpu.cpp powertop-2.7/src/cpu/cpu.cpp
  static class abstract_cpu * new_package(int package, int cpu, char * vendor, int family, int model)
  {
  	class abstract_cpu *ret = NULL;
-@@ -66,7 +68,7 @@ static class abstract_cpu * new_package(
+@@ -66,7 +68,7 @@ static class abstract_cpu * new_package(int package, int cpu, char * vendor, int
  	class dram_rapl_device *dram_rapl_dev;
  
  	char packagename[128];
 -	if (strcmp(vendor, "GenuineIntel") == 0)
 +	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
  		if (family == 6)
- 			if (is_supported_intel_cpu(model))
+ 			if (is_supported_intel_cpu(model, cpu)) {
  				ret = new class nhm_package(model);
-@@ -103,7 +105,7 @@ static class abstract_cpu * new_core(int
+@@ -107,7 +109,7 @@ static class abstract_cpu * new_core(int core, int cpu, char * vendor, int famil
  {
  	class abstract_cpu *ret = NULL;
  
 -	if (strcmp(vendor, "GenuineIntel") == 0)
 +	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
  		if (family == 6)
- 			if (is_supported_intel_cpu(model))
+ 			if (is_supported_intel_cpu(model, cpu)) {
  				ret = new class nhm_core(model);
-@@ -132,7 +134,7 @@ static class abstract_cpu * new_cpu(int
+@@ -141,7 +143,7 @@ static class abstract_cpu * new_cpu(int number, char * vendor, int family, int m
  {
  	class abstract_cpu * ret = NULL;
  
 -	if (strcmp(vendor, "GenuineIntel") == 0)
 +	if (strcmp(vendor, "GenuineIntel") == 0 && !inhibit_intel)
  		if (family == 6)
- 			if (is_supported_intel_cpu(model))
+ 			if (is_supported_intel_cpu(model, number)) {
  				ret = new class nhm_cpu;
-diff -purN powertop-2.7.org/src/main.cpp powertop-2.7/src/main.cpp
---- powertop-2.7.org/src/main.cpp	2014-11-21 13:28:31.000000000 -0500
-+++ powertop-2.7/src/main.cpp	2014-12-24 23:41:55.559956654 -0500
-@@ -69,6 +69,8 @@
+diff --git a/src/main.cpp b/src/main.cpp
+index 75d4202..6bd87ed 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -72,6 +72,8 @@
  int debug_learning = 0;
  unsigned time_out = 20;
  int leave_powertop = 0;
@@ -49,19 +51,19 @@ diff -purN powertop-2.7.org/src/main.cpp powertop-2.7/src/main.cpp
  void (*ui_notify_user) (const char *frmt, ...);
  
  enum {
-@@ -90,6 +92,7 @@ static const struct option long_options[
- 	{"quiet",	no_argument,		NULL,		 'q'},
+@@ -94,6 +96,7 @@ static const struct option long_options[] =
+ 	{"sample",	optional_argument,	NULL,		 's'},
  	{"time",	optional_argument,	NULL,		 't'},
  	{"workload",	optional_argument,	NULL,		 'w'},
 +	{"inhibit-intel",no_argument,		NULL,		 'x'},
  	{"version",	no_argument,		NULL,		 'V'},
  	{"help",	no_argument,		NULL,		 'h'},
  	{NULL,		0,			NULL,		 0}
-@@ -444,6 +447,9 @@ int main(int argc, char **argv)
+@@ -500,6 +503,9 @@ int main(int argc, char **argv)
  		case 'w':		/* measure workload */
- 			sprintf(workload, "%s", optarg ? optarg : '\0');
+ 			snprintf(workload, sizeof(workload), "%s", optarg ? optarg : "");
  			break;
-+		case 'x':	
++		case 'x':
 +			inhibit_intel = 1;
 +			break;
  		case 'V':
