@@ -1,3 +1,5 @@
+Configure miss: 32-bit host C ABI
+Configure miss: CFLocaleCopyPreferredLanguages
 Configure miss: whether to add -D_FORTIFY_SOURCE=2 to CPPFLAGS
 Configure miss: stdbool.h that conforms to C99
 Configure miss: _Bool
