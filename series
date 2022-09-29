@@ -1,3 +1,1 @@
 no-intel.patch
-0001-Revert-configure-Remove-AX-macros-from-configure.ac-.patch
-0002-configure-Use-AX_REQUIRE_DEFINED.patch
