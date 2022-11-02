@@ -4,7 +4,7 @@
 #
 Name     : powertop
 Version  : 2.15
-Release  : 32
+Release  : 33
 URL      : https://github.com/fenrus75/powertop/archive/v2.15/powertop-2.15.tar.gz
 Source0  : https://github.com/fenrus75/powertop/archive/v2.15/powertop-2.15.tar.gz
 Summary  : A tool to diagnose issues with power on Linux operating systems
@@ -15,6 +15,7 @@ Requires: powertop-data = %{version}-%{release}
 Requires: powertop-license = %{version}-%{release}
 Requires: powertop-locales = %{version}-%{release}
 Requires: powertop-man = %{version}-%{release}
+Requires: powertop-services = %{version}-%{release}
 BuildRequires : autoconf-archive-dev
 BuildRequires : gettext
 BuildRequires : perl(XML::Parser)
@@ -37,6 +38,7 @@ Summary: bin components for the powertop package.
 Group: Binaries
 Requires: powertop-data = %{version}-%{release}
 Requires: powertop-license = %{version}-%{release}
+Requires: powertop-services = %{version}-%{release}
 
 %description bin
 bin components for the powertop package.
@@ -74,6 +76,14 @@ Group: Default
 man components for the powertop package.
 
 
+%package services
+Summary: services components for the powertop package.
+Group: Systemd services
+
+%description services
+services components for the powertop package.
+
+
 %prep
 %setup -q -n powertop-2.15
 cd %{_builddir}/powertop-2.15
@@ -84,7 +94,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1664470370
+export SOURCE_DATE_EPOCH=1667422970
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -104,12 +114,15 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1664470370
+export SOURCE_DATE_EPOCH=1667422970
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/powertop
 cp %{_builddir}/powertop-%{version}/COPYING %{buildroot}/usr/share/package-licenses/powertop/a7a897a4bde987e597c04f16a9c28f6d3f57916d
 %make_install
 %find_lang powertop
+## install_append content
+install -m 644 -D -t %{buildroot}/usr/lib/systemd/system powertop.service
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -129,6 +142,10 @@ cp %{_builddir}/powertop-%{version}/COPYING %{buildroot}/usr/share/package-licen
 %files man
 %defattr(0644,root,root,0755)
 /usr/share/man/man8/powertop.8
+
+%files services
+%defattr(-,root,root,-)
+/usr/lib/systemd/system/powertop.service
 
 %files locales -f powertop.lang
 %defattr(-,root,root,-)

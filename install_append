@@ -1,0 +1,1 @@
+install -m 644 -D -t %{buildroot}/usr/lib/systemd/system powertop.service
